@@ -126,7 +126,7 @@ public class ArticleController {
 	@RequestMapping("/article/doModify")
 	public String doModify(Model model, @RequestParam Map<String, Object> param, HttpSession session, long id,
 			long boardId, HttpServletRequest req) {
-		// String referer = req.getHeader("referer");
+
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
 		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId);
 
@@ -156,8 +156,18 @@ public class ArticleController {
 
 	@RequestMapping("/article/doDelete")
 	public String doDelete(Model model, @RequestParam Map<String, Object> param, HttpSession session, long id, long boardId) {
-		param.put("id", id);
+		
+		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
+		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId);
 
+		if (((String) checkDeletePermmisionRs.get("resultCode")).startsWith("F-")) {
+			model.addAttribute("alertMsg", ((String) checkDeletePermmisionRs.get("msg")));
+			model.addAttribute("historyBack", true);
+
+			return "common/redirect";
+		}
+
+		param.put("id", id);
 		Map<String, Object> deleteRs = articleService.delete(param);
 
 		String msg = (String) deleteRs.get("msg");
