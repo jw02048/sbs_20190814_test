@@ -174,6 +174,16 @@ public class ArticleServiceImpl implements ArticleService {
 
 		return Maps.of("msg", msg, "resultCode", resultCode);
 	}
+	
+	@Override
+	public Map<String, Object> checkAddPermmision(long loginedMemberId) {
+		if (memberService.isMasterMember(loginedMemberId)) {
+			return Maps.of("resultCode", "S-1", "msg", "마스터회원은 모든 게시물을 수정할 수 있습니다.");
+		}
+
+		return Maps.of("resultCode", "F-2", "msg", "권한이 없습니다.");
+	}
+
 
 	@Override
 	public Map<String, Object> checkModifyPermmision(long id, long loginedMemberId) {

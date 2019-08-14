@@ -33,6 +33,8 @@ public interface ArticleService {
 	public Map<String, Object> delete(Map<String, Object> args);
 
 	public Map<String, Object> deleteReply(Map<String, Object> args);
+	
+	public Map<String, Object> checkAddPermmision(long loginedMemberId);
 
 	public Map<String, Object> checkModifyPermmision(long id, long loginedMemberId);
 	

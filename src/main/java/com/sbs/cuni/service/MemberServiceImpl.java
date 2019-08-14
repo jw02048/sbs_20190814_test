@@ -189,7 +189,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public boolean isMasterMember(long loginedMemberId) {
 		Member member = memberDao.getOne(loginedMemberId);
-		return member.getPermissionLevel() > 1;
+		return member.getPermissionLevel() > 0;
 	}
 
 }

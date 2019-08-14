@@ -90,6 +90,19 @@ public class ArticleController {
 
 	@RequestMapping("/article/doAdd")
 	public String doAdd(Model model, @RequestParam Map<String, Object> param, HttpSession session, long boardId) {
+		
+		if(boardId == 1) {
+			long loginedMemberId = (long) session.getAttribute("loginedMemberId");
+			Map<String, Object> checkAddPermmisionRs = articleService.checkAddPermmision(loginedMemberId);
+
+			if (((String) checkAddPermmisionRs.get("resultCode")).startsWith("F-")) {
+				model.addAttribute("alertMsg", ((String) checkAddPermmisionRs.get("msg")));
+				model.addAttribute("historyBack", true);
+
+				return "common/redirect";
+			}
+		}
+		
 		param.put("memberId", session.getAttribute("loginedMemberId"));
 		long newId = articleService.add(param);
 
