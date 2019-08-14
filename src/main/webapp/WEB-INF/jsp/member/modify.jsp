@@ -24,6 +24,34 @@
 			return;
 		}
 
+		form.loginPw.value = form.loginPw.value.trim();
+		if (form.loginPw.value.length == 0) {
+			alert('비밀번호를 입력해주세요.');
+			form.loginPw.focus();
+			return;
+		}
+		
+		form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
+		if (form.loginPwConfirm.value.length == 0) {
+			alert('비밀번호 확인을 입력해주세요.');
+			form.loginPwConfirm.focus();
+			return;
+		}
+
+		form.loginPw.value = form.loginPw.value.trim();
+		if (form.loginPw.value.length < 4) {
+			alert('비밀번호를 4자 이상 입력해주세요.');
+			form.loginPw.focus();
+			return;
+		}
+		
+		if (form.loginPw.value != form.loginPwConfirm.value) {
+			alert('비밀번호가 같지 않습니다.');
+			form.loginPwConfirm.value = "";
+			form.loginPwConfirm.focus();
+			return;
+		}
+
 		if (!email.match(emailP)) {
 			alert("이메일 형식에 맞지 않습니다.");
 			return false;
@@ -48,6 +76,16 @@
 				<tr>
 					<th>이메일</th>
 					<td><input type="text" name="email" value="${member.email}"></td>
+				</tr>
+				<tr>
+					<th>비밀번호</th>
+					<td><input type="password" name="loginPw"
+						placeholder="비밀번호를 입력해주세요."></td>
+				</tr>
+				<tr>
+					<th>비밀번호 확인</th>
+					<td><input type="password" name="loginPwConfirm"
+						placeholder="비밀번호 확인을 입력해주세요."></td>
 				</tr>
 				<tr>
 					<th>수정</th>
