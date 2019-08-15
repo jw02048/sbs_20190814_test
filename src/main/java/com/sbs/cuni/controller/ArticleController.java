@@ -62,8 +62,12 @@ public class ArticleController {
 
 			return "common/redirect";
 		}
-
-		Article article = articleService.getOne(Maps.of("id", id));
+		
+		Map<String, Object> param = new HashMap<>();
+		param.put("id", id);
+		param.put("extra__name", true);
+		
+		Article article = articleService.getOne(param);
 
 		model.addAttribute("article", article);
 

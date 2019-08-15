@@ -78,10 +78,16 @@
 
 
 	<select id="getOne" parameterType="map" resultMap="Article">
-		SELECT *
-		FROM
-		article
-		WHERE id = #{id}
+		SELECT A.*
+		<if test="extra__name == true">
+			, M.name AS extra__name
+		</if>
+		FROM article as A
+		<if test="leftJoin__member == true">
+			LEFT JOIN member AS M
+			ON A.memberId = M.id
+		</if>
+		WHERE A.id = #{id}
 	</select>
 
 	<select id="getBoard" parameterType="long" resultType="Board">

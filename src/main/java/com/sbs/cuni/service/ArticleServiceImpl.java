@@ -87,6 +87,9 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	public Article getOne(Map<String, Object> args) {
+		if (args.containsKey("extra__name") && (boolean) args.containsKey("extra__name") == true) {
+			args.put("leftJoin__member", true);
+		}
 		return articleDao.getOne(args);
 	}
 
