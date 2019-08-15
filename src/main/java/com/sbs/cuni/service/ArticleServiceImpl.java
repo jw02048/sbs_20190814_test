@@ -36,6 +36,10 @@ public class ArticleServiceImpl implements ArticleService {
 			args.put("groupBy__articleId", true);
 		}
 
+		if (args.containsKey("extra__name") && (boolean) args.containsKey("extra__name") == true) {
+			args.put("leftJoin__member", true);
+		}
+
 		int page = 1;
 		if (args.containsKey("page")) {
 			String pageStr = (String) args.get("page");
@@ -76,6 +80,9 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	public List<ArticleReply> getReplies(Map<String, Object> args) {
+		if (args.containsKey("extra__name") && (boolean) args.containsKey("extra__name") == true) {
+			args.put("leftJoin__member", true);
+		}
 		return articleDao.getReplies(args);
 	}
 
@@ -174,7 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
 
 		return Maps.of("msg", msg, "resultCode", resultCode);
 	}
-	
+
 	@Override
 	public Map<String, Object> checkAddPermmision(long loginedMemberId) {
 		if (memberService.isMasterMember(loginedMemberId)) {
@@ -183,7 +190,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 		return Maps.of("resultCode", "F-2", "msg", "권한이 없습니다.");
 	}
-
 
 	@Override
 	public Map<String, Object> checkModifyPermmision(long id, long loginedMemberId) {

@@ -36,6 +36,7 @@ public class ArticleController {
 
 		// 게시물 가져올 때 댓글 개수도 가져오도록
 		param.put("extra__repliesCount", true);
+		param.put("extra__name", true);
 
 		if (param.containsKey("page") == false) {
 			param.put("page", "1");
@@ -72,9 +73,13 @@ public class ArticleController {
 	@RequestMapping("/article/getReplies")
 	@ResponseBody
 	public Map<String, Object> getAllMessages(int articleId, int from) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("articleId", articleId);
+		param.put("from", from);
+		param.put("extra__name", true);
 		Map<String, Object> rs = new HashMap<>();
 		rs.put("resultCode", "S-1");
-		rs.put("replies", articleService.getReplies(Maps.of("articleId", articleId, "from", from)));
+		rs.put("replies", articleService.getReplies(param));
 
 		return rs;
 	}
@@ -90,8 +95,8 @@ public class ArticleController {
 
 	@RequestMapping("/article/doAdd")
 	public String doAdd(Model model, @RequestParam Map<String, Object> param, HttpSession session, long boardId) {
-		
-		if(boardId == 1) {
+
+		if (boardId == 1) {
 			long loginedMemberId = (long) session.getAttribute("loginedMemberId");
 			Map<String, Object> checkAddPermmisionRs = articleService.checkAddPermmision(loginedMemberId);
 
@@ -102,7 +107,7 @@ public class ArticleController {
 				return "common/redirect";
 			}
 		}
-		
+
 		param.put("memberId", session.getAttribute("loginedMemberId"));
 		long newId = articleService.add(param);
 
@@ -168,8 +173,9 @@ public class ArticleController {
 	}
 
 	@RequestMapping("/article/doDelete")
-	public String doDelete(Model model, @RequestParam Map<String, Object> param, HttpSession session, long id, long boardId) {
-		
+	public String doDelete(Model model, @RequestParam Map<String, Object> param, HttpSession session, long id,
+			long boardId) {
+
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
 		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId);
 

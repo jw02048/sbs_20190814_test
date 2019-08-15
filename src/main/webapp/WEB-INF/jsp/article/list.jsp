@@ -38,6 +38,7 @@
 	<table>
 		<colgroup>
 			<col width="80">
+			<col width="100">
 			<col width="180">
 			<col>
 			<col width="100">
@@ -46,6 +47,7 @@
 		<thead>
 			<tr>
 				<th>ID</th>
+				<th>작성자</th>
 				<th>등록날짜</th>
 				<th>제목</th>
 				<th>댓글</th>
@@ -56,6 +58,7 @@
 			<c:forEach var="article" items="${pagedListRs.list}">
 				<tr>
 					<td><c:out value="${article.id}" /></td>
+					<td><c:out value="${article.extra.name}" /></td>
 					<td><c:out value="${article.regDate}" /></td>
 					<td><a href="detail?id=${article.id}&boardId=${param.boardId}"><c:out
 								value="${article.title}" /></a></td>
