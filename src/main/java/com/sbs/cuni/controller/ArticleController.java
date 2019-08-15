@@ -62,11 +62,11 @@ public class ArticleController {
 
 			return "common/redirect";
 		}
-		
+
 		Map<String, Object> param = new HashMap<>();
 		param.put("id", id);
 		param.put("extra__name", true);
-		
+
 		Article article = articleService.getOne(param);
 
 		model.addAttribute("article", article);
@@ -150,7 +150,8 @@ public class ArticleController {
 			long boardId, HttpServletRequest req) {
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId);
+		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId,
+				Maps.of("articleCheck", true));
 
 		if (((String) checkModifyPermmisionRs.get("resultCode")).startsWith("F-")) {
 			model.addAttribute("alertMsg", ((String) checkModifyPermmisionRs.get("msg")));
@@ -181,7 +182,8 @@ public class ArticleController {
 			long boardId) {
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId);
+		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId,
+				Maps.of("articleCheck", true));
 
 		if (((String) checkDeletePermmisionRs.get("resultCode")).startsWith("F-")) {
 			model.addAttribute("alertMsg", ((String) checkDeletePermmisionRs.get("msg")));
@@ -233,11 +235,17 @@ public class ArticleController {
 
 	@RequestMapping("/article/doDeleteReply")
 	@ResponseBody
-	public Map<String, Object> doDeleteReply(Model model, @RequestParam Map<String, Object> param,
+	public Map<String, Object> doDeleteReply(Model model, @RequestParam Map<String, Object> param, long id,
 			HttpSession session) {
 
-		long loginedId = (long) session.getAttribute("loginedMemberId");
-		param.put("loginedMemberId", loginedId);
+		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
+		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId,
+				Maps.of("ReplyCheck", true));
+
+		if (((String) checkDeletePermmisionRs.get("resultCode")).startsWith("F-")) {
+			return checkDeletePermmisionRs;
+		}
+
 		Map<String, Object> deleteReplyRs = articleService.deleteReply(param);
 
 		String msg = (String) deleteReplyRs.get("msg");
@@ -250,8 +258,8 @@ public class ArticleController {
 
 	@RequestMapping("/article/doModifyReply")
 	@ResponseBody
-	public Map<String, Object> doModifyReply(Model model, @RequestParam Map<String, Object> param, HttpSession session,
-			HttpServletRequest request, long id) {
+	public Map<String, Object> doModifyReply(Model model, @RequestParam Map<String, Object> param, long id,
+			HttpSession session) {
 
 		try {
 			Thread.sleep(100);
@@ -259,6 +267,14 @@ public class ArticleController {
 			e.printStackTrace();
 		}
 
+		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
+		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId,
+				Maps.of("ReplyCheck", true));
+
+		if (((String) checkModifyPermmisionRs.get("resultCode")).startsWith("F-")) {
+			return checkModifyPermmisionRs;
+		}
+		
 		param.put("id", id);
 
 		Map<String, Object> updateRs = articleService.updateReply(param);

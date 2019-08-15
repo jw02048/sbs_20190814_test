@@ -144,7 +144,7 @@
 		UPDATE articleReply
 		<set>
 			<if test="body != null">body = #{body},</if>
-			<if test="boardId != null">boardId = 1,</if>
+			<if test="boardId != null">boardId = #{boardId},</if>
 		</set>
 		WHERE id = #{id}
 	</update>
