@@ -138,7 +138,7 @@ public class ArticleServiceImpl implements ArticleService {
 		resultCode = "S-4";
 
 		return Maps.of("msg", msg, "resultCode", resultCode);
-		
+
 	}
 
 	public Map<String, Object> delete(Map<String, Object> args) {
@@ -183,72 +183,87 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public Map<String, Object> checkModifyPermmision(long id, long loginedMemberId, Map<String, Object> args) {
+	public Map<String, Object> checkPermmision(Map<String, Object> args) {
 
-		if (args.containsKey("articleCheck") && (boolean) args.containsKey("articleCheck") == true) {
+		long id = id = (long) args.get("id");
 
-			Article article = articleDao.getOne(Maps.of("id", id));
+		long loginedMemberId = (long) args.get("loginedMemberId");
 
-			if (article == null) {
-				return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 게시물 입니다.");
+		if (args.containsKey("Article") && (boolean) args.containsKey("Article") == true) {
+
+			if (args.containsKey("Add") && (boolean) args.containsKey("Add") == true) {
+
+				if (memberService.isMasterMember(loginedMemberId)) {
+					return Maps.of("resultCode", "S-1", "msg", "관리자는 공지사항을 작성할 수 있습니다.");
+				}
+
+				return Maps.of("resultCode", "F-2", "msg", "권한이 없습니다.");
 			}
 
-			if (article.getMemberId() == loginedMemberId) {
-				return Maps.of("resultCode", "S-2", "msg", "게시물의 작성자는 해당 게시물을 수정할 수 있습니다.");
+			if (args.containsKey("Modify") && (boolean) args.containsKey("Modify") == true) {
+
+				Article article = articleDao.getOne(Maps.of("id", id));
+
+				if (article == null) {
+					return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 게시물 입니다.");
+				}
+
+				if (article.getMemberId() == loginedMemberId) {
+					return Maps.of("resultCode", "S-2", "msg", "게시물의 작성자는 해당 게시물을 수정할 수 있습니다.");
+				}
 			}
+
+			if (args.containsKey("Delete") && (boolean) args.containsKey("Delete") == true) {
+
+				Article article = articleDao.getOne(Maps.of("id", id));
+
+				if (article == null) {
+					return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 게시물 입니다.");
+				}
+
+				if (memberService.isMasterMember(loginedMemberId)) {
+					return Maps.of("resultCode", "S-1", "msg", "마스터회원은 모든 게시물을 삭제할 수 있습니다.");
+				}
+
+				if (article.getMemberId() == loginedMemberId) {
+					return Maps.of("resultCode", "S-2", "msg", "게시물/댓글의 작성자는 해당 게시물을 삭제할 수 있습니다.");
+				}
+			}
+
 		}
-		
-		if (args.containsKey("ReplyCheck") && (boolean) args.containsKey("ReplyCheck") == true) {
-			
-			ArticleReply articleReply = articleDao.getReply(Maps.of("id", id));
 
-			if (articleReply == null) {
-				return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 댓글 입니다.");
+		if (args.containsKey("Reply") && (boolean) args.containsKey("Reply") == true) {
+
+			if (args.containsKey("Modify") && (boolean) args.containsKey("Modify") == true) {
+
+				ArticleReply articleReply = articleDao.getReply(Maps.of("id", id));
+
+				if (articleReply == null) {
+					return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 댓글 입니다.");
+				}
+
+				if (articleReply.getMemberId() == loginedMemberId) {
+					return Maps.of("resultCode", "S-2", "msg", "댓글의 작성자는 해당 댓글을 수정할 수 있습니다.");
+				}
+
 			}
 
-			if (articleReply.getMemberId() == loginedMemberId) {
-				return Maps.of("resultCode", "S-2", "msg", "댓글의 작성자는 해당 댓글을 수정할 수 있습니다.");
-			}
-			
-		}
+			if (args.containsKey("Delete") && (boolean) args.containsKey("Delete") == true) {
 
-		return Maps.of("resultCode", "F-2", "msg", "권한이 없습니다.");
-	}
+				ArticleReply articleReply = articleDao.getReply(Maps.of("id", id));
 
-	@Override
-	public Map<String, Object> checkDeletePermmision(long id, long loginedMemberId, Map<String, Object> args) {
+				if (articleReply == null) {
+					return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 댓글 입니다.");
+				}
 
-		if (args.containsKey("articleCheck") && (boolean) args.containsKey("articleCheck") == true) {
+				if (memberService.isMasterMember(loginedMemberId)) {
+					return Maps.of("resultCode", "S-1", "msg", "마스터회원은 모든 댓글을 삭제할 수 있습니다.");
+				}
 
-			Article article = articleDao.getOne(Maps.of("id", id));
+				if (articleReply.getMemberId() == loginedMemberId) {
+					return Maps.of("resultCode", "S-2", "msg", "댓글의 작성자는 해당 댓글을 삭제할 수 있습니다.");
+				}
 
-			if (article == null) {
-				return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 게시물 입니다.");
-			}
-
-			if (memberService.isMasterMember(loginedMemberId)) {
-				return Maps.of("resultCode", "S-1", "msg", "마스터회원은 모든 게시물을 삭제할 수 있습니다.");
-			}
-
-			if (article.getMemberId() == loginedMemberId) {
-				return Maps.of("resultCode", "S-2", "msg", "게시물/댓글의 작성자는 해당 게시물을 삭제할 수 있습니다.");
-			}
-		}
-		
-		if (args.containsKey("ReplyCheck") && (boolean) args.containsKey("ReplyCheck") == true) {
-
-			ArticleReply articleReply = articleDao.getReply(Maps.of("id", id));
-
-			if (articleReply == null) {
-				return Maps.of("resultCode", "F-1", "msg", "존재하지 않는 댓글 입니다.");
-			}
-
-			if (memberService.isMasterMember(loginedMemberId)) {
-				return Maps.of("resultCode", "S-1", "msg", "마스터회원은 모든 댓글을 삭제할 수 있습니다.");
-			}
-
-			if (articleReply.getMemberId() == loginedMemberId) {
-				return Maps.of("resultCode", "S-2", "msg", "댓글의 작성자는 해당 댓글을 삭제할 수 있습니다.");
 			}
 
 		}

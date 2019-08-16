@@ -101,11 +101,13 @@ public class ArticleController {
 	public String doAdd(Model model, @RequestParam Map<String, Object> param, HttpSession session, long boardId) {
 
 		if (boardId == 1) {
+			long id = (long) 0;
 			long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-			Map<String, Object> checkAddPermmisionRs = articleService.checkAddPermmision(loginedMemberId);
+			Map<String, Object> checkPermmisionRs = articleService.checkPermmision(
+					Maps.of("Article", true, "Add", true, "loginedMemberId", loginedMemberId, "id", id));
 
-			if (((String) checkAddPermmisionRs.get("resultCode")).startsWith("F-")) {
-				model.addAttribute("alertMsg", ((String) checkAddPermmisionRs.get("msg")));
+			if (((String) checkPermmisionRs.get("resultCode")).startsWith("F-")) {
+				model.addAttribute("alertMsg", ((String) checkPermmisionRs.get("msg")));
 				model.addAttribute("historyBack", true);
 
 				return "common/redirect";
@@ -150,11 +152,11 @@ public class ArticleController {
 			long boardId, HttpServletRequest req) {
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId,
-				Maps.of("articleCheck", true));
+		Map<String, Object> checkPermmisionRs = articleService.checkPermmision(
+				Maps.of("Article", true, "Modify", true, "id", id, "loginedMemberId", loginedMemberId));
 
-		if (((String) checkModifyPermmisionRs.get("resultCode")).startsWith("F-")) {
-			model.addAttribute("alertMsg", ((String) checkModifyPermmisionRs.get("msg")));
+		if (((String) checkPermmisionRs.get("resultCode")).startsWith("F-")) {
+			model.addAttribute("alertMsg", ((String) checkPermmisionRs.get("msg")));
 			model.addAttribute("historyBack", true);
 
 			return "common/redirect";
@@ -182,11 +184,11 @@ public class ArticleController {
 			long boardId) {
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId,
-				Maps.of("articleCheck", true));
+		Map<String, Object> checkPermmisionRs = articleService.checkPermmision(
+				Maps.of("Article", true, "Delete", true, "id", id, "loginedMemberId", loginedMemberId));
 
-		if (((String) checkDeletePermmisionRs.get("resultCode")).startsWith("F-")) {
-			model.addAttribute("alertMsg", ((String) checkDeletePermmisionRs.get("msg")));
+		if (((String) checkPermmisionRs.get("resultCode")).startsWith("F-")) {
+			model.addAttribute("alertMsg", ((String) checkPermmisionRs.get("msg")));
 			model.addAttribute("historyBack", true);
 
 			return "common/redirect";
@@ -239,11 +241,11 @@ public class ArticleController {
 			HttpSession session) {
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkDeletePermmisionRs = articleService.checkDeletePermmision(id, loginedMemberId,
-				Maps.of("ReplyCheck", true));
+		Map<String, Object> checkPermmisionRs = articleService
+				.checkPermmision(Maps.of("Reply", true, "Delete", true, "id", id, "loginedMemberId", loginedMemberId));
 
-		if (((String) checkDeletePermmisionRs.get("resultCode")).startsWith("F-")) {
-			return checkDeletePermmisionRs;
+		if (((String) checkPermmisionRs.get("resultCode")).startsWith("F-")) {
+			return checkPermmisionRs;
 		}
 
 		Map<String, Object> deleteReplyRs = articleService.deleteReply(param);
@@ -268,13 +270,13 @@ public class ArticleController {
 		}
 
 		long loginedMemberId = (long) session.getAttribute("loginedMemberId");
-		Map<String, Object> checkModifyPermmisionRs = articleService.checkModifyPermmision(id, loginedMemberId,
-				Maps.of("ReplyCheck", true));
+		Map<String, Object> checkPermmisionRs = articleService
+				.checkPermmision(Maps.of("Reply", true, "Modify", true, "id", id, "loginedMemberId", loginedMemberId));
 
-		if (((String) checkModifyPermmisionRs.get("resultCode")).startsWith("F-")) {
-			return checkModifyPermmisionRs;
+		if (((String) checkPermmisionRs.get("resultCode")).startsWith("F-")) {
+			return checkPermmisionRs;
 		}
-		
+
 		param.put("id", id);
 
 		Map<String, Object> updateRs = articleService.updateReply(param);
