@@ -15,6 +15,8 @@ public interface ArticleService {
 	public Map<String, Object> getPagedList(Map<String, Object> param);
 
 	public List<ArticleReply> getReplies(Map<String, Object> args);
+	
+	public void addHit(Map<String, Object> args);
 
 	public Article getOne(Map<String, Object> args);
 

@@ -19,6 +19,7 @@ public class Article {
 	private String title;
 	private String body;
 	private String passwd;
+	private long hit;
 	private long memberId;
 	private long boardId;
 	private Map<String, String> extra;

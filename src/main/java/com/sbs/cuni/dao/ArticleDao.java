@@ -31,6 +31,8 @@ public interface ArticleDao {
 	public Article getBoardId(Map<String, Object> args);
 
 	public void add(Map<String, Object> args);
+	
+	public void addHit(Map<String, Object> args);
 
 	public void addReply(Map<String, Object> args);
 

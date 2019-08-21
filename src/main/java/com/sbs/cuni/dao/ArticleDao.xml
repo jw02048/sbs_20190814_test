@@ -114,6 +114,7 @@
 		SET regDate = NOW(),
 		title = #{title},
 		body = #{body},
+		hit = 0,
 		boardId = #{boardId},
 		memberId = #{memberId}
 	</insert>
@@ -129,6 +130,14 @@
 		body =
 		#{body}
 	</insert>
+	
+	<update id="addHit">
+		UPDATE article
+		<set>
+			hit = hit + 1,
+		</set>
+		WHERE id = #{id}
+	</update>
 
 	<update id="modify">
 		UPDATE article
@@ -156,7 +165,8 @@
 
 	<delete id="deleteReplies">
 		DELETE FROM articleReply
-		WHERE articleId = #{articleId}
+		WHERE articleId =
+		#{articleId}
 	</delete>
 
 	<delete id="deleteReply">
@@ -169,6 +179,7 @@
 		<id property="regDate" column="regDate" />
 		<id property="title" column="title" />
 		<id property="body" column="body" />
+		<id property="hit" column="hit" />
 		<id property="memberId" column="memberId" />
 		<id property="boardId" column="boardId" />
 		<id property="passwd" column="passwd" />

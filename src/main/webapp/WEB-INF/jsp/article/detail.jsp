@@ -45,7 +45,7 @@
 }
 </style>
 
-
+<div class="con text-align-right">조회수 : ${article.hit}</div>
 <div class="article-detail table-common con">
 	<table>
 		<colgroup>

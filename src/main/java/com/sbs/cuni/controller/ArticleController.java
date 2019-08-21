@@ -66,6 +66,8 @@ public class ArticleController {
 		Map<String, Object> param = new HashMap<>();
 		param.put("id", id);
 		param.put("extra__name", true);
+		
+		articleService.addHit(param);
 
 		Article article = articleService.getOne(param);
 

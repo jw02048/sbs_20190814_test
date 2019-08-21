@@ -58,6 +58,10 @@ a:link {
 	text-align: center;
 }
 
+.text-align-right {
+	text-align: right;
+}
+
 .line-height-0-ch-only {
 	line-height: 0;
 }

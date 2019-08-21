@@ -107,6 +107,10 @@ public class ArticleServiceImpl implements ArticleService {
 		return CUtil.getAsLong(args.get("id"));
 	}
 
+	public void addHit(Map<String, Object> args) {
+		articleDao.addHit(args);
+	}
+
 	public long addReply(Map<String, Object> args) {
 		articleDao.addReply(args);
 
